@@ -16,4 +16,4 @@ func NewJCError(msg string) JCError {
 	return JCError(msg)
 }
 
-var ErrorCacheIsFull = JCError("items is full")
+var ErrorCacheIsFull = NewJCError("items is full")
