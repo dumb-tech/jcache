@@ -92,7 +92,7 @@ func TestClear(t *testing.T) {
 }
 
 func TestExpirationCleanup_OnTheFly(t *testing.T) {
-	jc := New(20*time.Millisecond, 10000).WithStrategy(cleanupStrategyOnTheFly)
+	jc := New(20*time.Millisecond, 10000).WithStrategy(CleanupStrategyOnTheFly)
 	defer func(jc *JustCache) {
 		_ = jc.Close()
 	}(jc)
@@ -108,7 +108,7 @@ func TestExpirationCleanup_OnTheFly(t *testing.T) {
 }
 
 func TestExpirationCleanup_Collect(t *testing.T) {
-	jc := New(20*time.Millisecond, 10000).WithStrategy(cleanupStrategyCollect)
+	jc := New(20*time.Millisecond, 10000).WithStrategy(CleanupStrategyCollect)
 	defer func(jc *JustCache) {
 		_ = jc.Close()
 	}(jc)

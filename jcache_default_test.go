@@ -58,7 +58,7 @@ func TestDefaultCacheClear(t *testing.T) {
 }
 
 func TestDefaultCacheExpirationCleanup(t *testing.T) {
-	jc := Default().WithStrategy(cleanupStrategyOnTheFly)
+	jc := Default().WithStrategy(CleanupStrategyOnTheFly)
 	defer func() {
 		_ = jc.Close()
 	}()

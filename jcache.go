@@ -9,14 +9,14 @@ import (
 type CleanupStrategy int
 
 const (
-	cleanupStrategyOnTheFly CleanupStrategy = iota
-	cleanupStrategyCollect
+	CleanupStrategyOnTheFly CleanupStrategy = 0
+	CleanupStrategyCollect  CleanupStrategy = 1
 )
 
 const (
 	defaultInterval = 1 * time.Minute
 	defaultCapacity = 100000
-	defaultStrategy = cleanupStrategyOnTheFly
+	defaultStrategy = CleanupStrategyOnTheFly
 )
 
 type item struct {
@@ -44,10 +44,14 @@ type JustCache struct {
 
 // New creates a new JustCache instance with the specified cleanup interval and capacity.
 func New(interval time.Duration, capacity int64) *JustCache {
+	if interval <= 0 || capacity <= 0 {
+		return Default()
+	}
+
 	jc := &JustCache{
 		items:           make(map[string]item, capacity),
 		cleanupInterval: interval,
-		cleanupStrategy: cleanupStrategyOnTheFly,
+		cleanupStrategy: CleanupStrategyOnTheFly,
 		cleanupStopCh:   make(chan struct{}),
 		capacity:        capacity,
 	}
@@ -164,7 +168,7 @@ func (jc *JustCache) Clear() {
 // Clean removes expired items from the cache based on the provided time.
 func (jc *JustCache) Clean(now time.Time) {
 	switch jc.cleanupStrategy {
-	case cleanupStrategyOnTheFly:
+	case CleanupStrategyOnTheFly:
 		for key, record := range jc.items {
 			if now.After(record.deadAfter) {
 				jc.mu.Lock()
@@ -172,7 +176,7 @@ func (jc *JustCache) Clean(now time.Time) {
 				jc.mu.Unlock()
 			}
 		}
-	case cleanupStrategyCollect:
+	case CleanupStrategyCollect:
 		dead := jc.dead(now)
 
 		jc.mu.Lock()
