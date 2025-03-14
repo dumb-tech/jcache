@@ -44,6 +44,10 @@ type JustCache struct {
 
 // New creates a new JustCache instance with the specified cleanup interval and capacity.
 func New(interval time.Duration, capacity int64) *JustCache {
+	if interval <= 0 || capacity <= 0 {
+		return Default()
+	}
+
 	jc := &JustCache{
 		items:           make(map[string]item, capacity),
 		cleanupInterval: interval,
